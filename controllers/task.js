@@ -1,4 +1,4 @@
-const Task = require("../models")
+const Task = require("../models/task.js")
 
 const index = async (req, res) => {
   try {
