@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const logger = require('./logger')
 
-const taskRouter = require('./routes/Task')
+const taskRouter = require('./routes')
 
 const app = express()
 app.use(express.json())
