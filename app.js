@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 
-const logger = require('./logger')
+const logger = require('./middleware/logger')
 // const pomegranateRouter = require('./routes/pokemon')
 
 const app = express()
