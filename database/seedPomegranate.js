@@ -4,7 +4,7 @@ const seedDB = async () => {
     try {
         await client.connect()
         console.log("Awaiting Seed 🌱")
-        await client.db('pomegranate').collection('user').drop()
+        // await client.db('pomegranate').collection('user').drop()
         await client.db('pomegranate').collection('user').insertMany([
             { name: "Chey", username: "Chey", password: "Chey", token: "", tasks: [], pomodoroCount: 0},
             { name: "a", username: "a", password: "a", token: "", tasks: [], pomodoroCount: 0},
