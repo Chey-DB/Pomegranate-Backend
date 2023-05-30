@@ -10,7 +10,7 @@ app.use(cors())
 app.use(logger)
 
 app.get('/', (req, res) => {
-    res.json({"App": "Hello World"})
+    res.json(" Hello World ")
 })
 
 app.use("/user", userRouter)

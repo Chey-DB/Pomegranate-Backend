@@ -2,6 +2,10 @@ const { ObjectId } = require('mongodb');
 const client = require("../database/setup");
 const { v4: uuidv4 } = require("uuid");
 
+function getUserCollection() {
+    return client.db("pomegranate").collection("user");
+}
+
 class User {
     constructor(data) {
         this.id = data._id;
@@ -13,15 +17,11 @@ class User {
         this.pomodoroCount = data.pomodoroCount;
     }
 
-    // Getter for the user collection
-    get userCollection() {
-        return client.db("pomegranate").collection("user");
-    }
 
     // Static methods
     static async getAllUsers() {
         try {
-            const usersCursor = await this.getUserCollection().find();
+            const usersCursor = await getUserCollection().find();
             return await usersCursor.toArray();
         } catch (e) {
             console.error("Failed to get all users:", e);
@@ -31,7 +31,7 @@ class User {
 
     static async getUserById(id) {
         try {
-            const user = await this.getUserCollection().findOne({ _id: ObjectId(id) });
+            const user = await getUserCollection().findOne({ _id: ObjectId(id) });
             return new User(user);
         } catch (e) {
             console.error(`Failed to get user by id ${id}:`, e);
@@ -41,7 +41,7 @@ class User {
 
     static async getUserByUsername(username) {
         try {
-            const user = await this.getUserCollection().findOne({ username: username });
+            const user = await getUserCollection().findOne({ username: username });
             return new User(user);
         } catch (e) {
             console.error(`Failed to get user by username ${username}:`, e);
@@ -51,7 +51,7 @@ class User {
 
     static async createUser({ name, username, password }) {
         try {
-            const response = await this.getUserCollection().insertOne({ name: name, username: username, password: password, token: "", tasks: [], pomodoroCount: 0 });
+            const response = await getUserCollection().insertOne({ name: name, username: username, password: password, token: "", tasks: [], pomodoroCount: 0 });
             return new User(response.ops[0]);
         } catch (e) {
             console.error("Failed to create user:", e);
@@ -62,7 +62,7 @@ class User {
     // Instance methods
     async getTaskByIndex(index) {
         try {
-            const user = await this.userCollection.findOne(
+            const user = await getUserCollection.findOne(
                 { _id: this.id }, 
                 { projection: { tasks: { $slice: [index, 1] } } }
             );
@@ -151,4 +151,4 @@ class User {
     }
 }
 
-module.exports = User; _
+module.exports = User;
