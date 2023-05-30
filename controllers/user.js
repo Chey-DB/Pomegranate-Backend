@@ -1,16 +1,16 @@
-const Task = require("../models/task.js")
+const Pomegrenate = require("../models")
 
 const index = async (req, res) => {
   try {
-    const task = await Task.getAll()
+    const pomegrenate = await Pomegrenate.getAll()
     res.status(200).json({
       "success": true,
-      "Task": task
+      "Pomegrenate": pomegrenate
     })
   } catch (e) {
     res.status(500).json({
       "success": false,
-      "message": "Task not available right now",
+      "message": "Pomegrenate not available right now",
       "error": e,
     })
   }
@@ -19,15 +19,15 @@ const index = async (req, res) => {
 const show = async (req, res) => {
   try {
     const idx = req.params.id
-    const task = await Task.getOne(idx)
+    const pomegrenate = await Pomegrenate.getOne(idx)
     res.status(200).json({
       "success": true,
-      "Task": task
+      "Pomegrenate": pomegrenate
     })
   } catch (e) {
     res.status(404).json({
       "success": false,
-      "message": "Task not found",
+      "message": "Pomegrenate not found",
       "error": e,
     })
   }
@@ -36,7 +36,7 @@ const show = async (req, res) => {
 const create = async (req, res) => {
   try {
     const data = req.body
-    const result = await Task.create(data)
+    const result = await Pomegrenate.create(data)
     res.status(201).json({
       "success": true,
       "response": result
@@ -44,7 +44,7 @@ const create = async (req, res) => {
   } catch (e) {
     res.status(404).json({
       "success": false,
-      "message": "Unable to create new Task",
+      "message": "Unable to create new Pomegrenate",
       "error": e,
     })
   }
@@ -54,8 +54,8 @@ const update = async (req, res) => {
   try {
     const idx = req.params.id
     const data = req.body
-    const task = await Task.getOne(idx)
-    const result = await task.update(data)
+    const pomegrenate = await Pomegrenate.getOne(idx)
+    const result = await pomegrenate.update(data)
     res.status(200).json({
       "succuess": true,
       "response": result
@@ -63,7 +63,7 @@ const update = async (req, res) => {
   } catch (e) {
     res.status(404).json({
       "success": false,
-      "message": "Unable to update Task",
+      "message": "Unable to update Pomegrenate",
       "error": e,
     })
   }
@@ -73,8 +73,8 @@ const update = async (req, res) => {
 const destroy = async (req, res) => {
   try {
     const idx = req.params.id
-    const task = await Task.getOne(idx)
-    const result = await task.destory()
+    const pomegrenate = await Pomegrenate.getOne(idx)
+    const result = await pomegrenate.destory()
     res.status(204).json({
       "success": true,
       "respose": result
@@ -82,7 +82,7 @@ const destroy = async (req, res) => {
   } catch (e) {
     res.status(404).json({
       "success": false,
-      "message": "Unable to delete Task",
+      "message": "Unable to delete Pomegrenate",
       "error": e,
     })
   }

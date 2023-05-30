@@ -2,7 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const logger = require('./logger')
 
-const taskRouter = require('./routes/task')
+const taskRouter = require('./routes/pomegrenate')
 
 const app = express()
 app.use(express.json())
@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 
 
 
-app.use("/task", taskRouter)
+app.use("/pomegrenate", taskRouter)
 
 
 module.exports = app
