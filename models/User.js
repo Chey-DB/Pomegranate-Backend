@@ -13,50 +13,94 @@ class User {
         this.pomodoroCount = data.pomodoroCount;
     }
 
-    //user related methods
-
-    static async getAllUsers() {
-        await client.connect();
-        const response = await client.db("pomegranate").collection("user").find()
-        const users = await response.toArray();
-        await client.close();
-        return users;
-    }
-
-    static async getUserById(id) {
-        await client.connect();
-        const response = await client.db("pomegranate").collection("user").findOne({ _id: ObjectId(id) });
-        const user = new User(response);
-        await client.close();
-        return user;
-    }
-
-    static async getUserByUsername(username) {
-        await client.connect();
-        const response = await client.db("pomegranate").collection("user").findOne({ username: username });
-        const user = new User(response);
-        await client.close();
-        return user;
-    }
-
-    static async createUser(name, username, password) {
-        await client.connect();
-        const response = await client.db("pomegranate").collection("user").insertOne({ name: name, username: username, password: password, token: "", tasks: [], pomodoroCount: 0 });
-        const user = new User(response.ops[0]);
-        await client.close();
-        return user;
-    }
-
-
-    // task related methods
-
-    static async getTaskByIndex(username, index) {
-        await client.connect();
-        const response = await client.db("pomegranate").collection("user").find({ username: username }, { tasks: { $slice: [index, 1] } });
-
-
-
     
+        // Helper method to get the user collection
+        static getUserCollection() {
+          return client.db("pomegranate").collection("user");
+        }
 
-}
+        //user related methods      
+        static async getAllUsers() {
+          try {
+            const usersCursor = await this.getUserCollection().find();
+            return await usersCursor.toArray();
+          } catch (e) {
+            console.error("Failed to get all users:", e);
+            return [];
+          }
+        }
+      
+        static async getUserById(id) {
+          try {
+            const user = await this.getUserCollection().findOne({ _id: ObjectId(id) });
+            return new User(user);
+          } catch (e) {
+            console.error(`Failed to get user by id ${id}:`, e);
+            return null;
+          }
+        }
+      
+        static async getUserByUsername(username) {
+          try {
+            const user = await this.getUserCollection().findOne({ username: username });
+            return new User(user);
+          } catch (e) {
+            console.error(`Failed to get user by username ${username}:`, e);
+            return null;
+          }
+        }
+      
+        static async createUser(name, username, password) {
+          try {
+            const response = await this.getUserCollection().insertOne({ name: name, username: username, password: password, token: "", tasks: [], pomodoroCount: 0 });
+            return new User(response.ops[0]);
+          } catch (e) {
+            console.error("Failed to create user:", e);
+            return null;
+          }
+        }
 
+        static async getTaskByIndex(username, index) {
+            try {
+              const user = await this.getUserCollection().findOne(
+                { username: username }, 
+                { projection: { tasks: { $slice: [index, 1] } } }
+              );
+              return user.tasks[0];
+            } catch (e) {
+              console.error(`Failed to get task by index for user ${username}:`, e);
+              return null;
+            }
+          }
+        
+          static async updateTaskByIndex(username, index, description, completed, pomodoroCount) {
+            try {
+              const response = await this.getUserCollection().updateOne(
+                { username: username },
+                { $set: { [`tasks.${index}`]: {description, completed, pomodoroCount} } }
+              );
+              return response.modifiedCount > 0;
+            } catch (e) {
+              console.error(`Failed to update task by index for user ${username}:`, e);
+              return false;
+            }
+          }
+        
+          static async deleteTaskByIndex(username, index) {
+            try {
+              const response = await this.getUserCollection().updateOne(
+                { username: username },
+                { $unset: { [`tasks.${index}`]: 1 }, $pull: { tasks: null } }
+              );
+              return response.modifiedCount > 0;
+            } catch (e) {
+              console.error(`Failed to delete task by index for user ${username}:`, e);
+              return false;
+            }
+          }
+        }
+
+
+        
+
+      
