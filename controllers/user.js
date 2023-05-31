@@ -111,9 +111,11 @@ async function updatePomodoroCount(req, res) {
 
 async function addTask(req, res) {
     try {
-        const user = await User.getUserByUsername(req.params.username);
+        console.log(req.params.username);
+        const user = await User.getUserByUsername(req.params.username);       
+        console.log(user);
         if (user) {
-            const updatedUser = await user.addTask(req.body);
+            const updatedUser = await user.addTask(req.body.description);
             if (updatedUser) {
                 res.status(200).json({ user: user });
             } else {
@@ -131,7 +133,8 @@ async function updateTask(req, res) {
     try {
         const user = await User.getUserByUsername(req.params.username);
         if (user) {
-            const updatedUser = await user.updateTask(req.params.index, req.body);
+            { description, completed, pomodoroCount } = (req.body);
+            const updatedUser = await user.updateTaskByIndex(req.params.index, req.body);
             if (updatedUser) {
                 res.status(200).json({ user: user });
             } else {

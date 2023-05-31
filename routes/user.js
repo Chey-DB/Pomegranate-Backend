@@ -12,7 +12,7 @@ userRouter.post("/register", userController.register);
 userRouter.post("/login", userController.login);
 
 // task routes
-userRouter.post("/:username/tasks/:index", userController.addTask)
+userRouter.post("/:username/tasks", userController.addTask)
 userRouter.patch("/:username/tasks/:index", userController.updateTask)
 userRouter.delete("/:username/tasks/:index", userController.deleteTask)
 

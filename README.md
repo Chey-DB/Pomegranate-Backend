@@ -5,7 +5,7 @@ The backend of our revision App
 
 localhost:3000/
 
-[]1.A user should be able to view all their tasks and pomodoroCount
+[x]1.A user should be able to view all their tasks and pomodoroCount
 GET - :username
 ---> Return user document to be manipulated in view
 
@@ -20,18 +20,18 @@ POST - register
 POST - login
 
 
-[]5.A user should be able to update a task
+[x]5.A user should be able to update a task
 PATCH - :username/tasks/:index
 
 
-[]6.A user should be able to delete a task
+[x]6.A user should be able to delete a task
 DELETE - :username/tasks/:index
 
-[]7.A user should be able to logout
+[x]7.A user should be able to logout
 DELETE - :username
 
-[]8.A user should be able to add a task
+[x]8.A user should be able to add a task
 POST - :username/tasks/:index
 
-[]9. A user should be able to have their pomodoroCount updated
+[x]9. A user should be able to have their pomodoroCount updated
 PATCH - :username/pomodoroCount

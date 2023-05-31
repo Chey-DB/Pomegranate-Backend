@@ -83,10 +83,24 @@ class User {
         }
     }
 
+    async addTask(description) {
+        try {
+            const response = await getUserCollection().updateOne(
+                { username: this.username },
+                { $push: { tasks: { description, completed: false, pomodoroCount: 0 } } }
+            );
+            return response.modifiedCount > 0;
+            console.log(response);
+        } catch (e) {
+            console.error(`Failed to add task for user ${this.username}:`, e);
+            return false;
+        }
+    }
+
     async getTaskByIndex(index) {
         try {
             const user = await getUserCollection.findOne(
-                { _id: this.id }, 
+                { username: this.username }, 
                 { projection: { tasks: { $slice: [index, 1] } } }
             );
             return user.tasks[0];
@@ -96,10 +110,10 @@ class User {
         }
     }
     
-    async updateTaskByIndex(index, description, completed, pomodoroCount) {
+    async updateTaskByIndex( index, description, completed, pomodoroCount ) {
         try {
-            const response = await this.userCollection().updateOne(
-                { _id: this.id },
+            const response = await getUserCollection().updateOne(
+                { username: this.username },
                 { $set: { [`tasks.${index}`]: {description, completed, pomodoroCount} } }
             );
             return response.modifiedCount > 0;
