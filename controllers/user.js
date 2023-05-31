@@ -1,13 +1,14 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-
+const { v4: uuidv4 } = require("uuid");
 
 async function register(req, res) {
     try {
-        const { name, username, password } = req.body;
+        const data = req.body;
         const salt = await bcrypt.genSalt(parseInt(process.env.BCRYPT_SALT_ROUNDS));
-        const hashedPassword = await bcrypt.hash(password, salt);
-        const user = await User.createUser(name, username, hashedPassword);
+        const hashedPassword = await bcrypt.hash(data.password, salt);
+        data.password = hashedPassword
+        const user = await User.createUser(data);
         if (user) {
             res.status(201).json({ user: user });
         } else {
@@ -21,15 +22,17 @@ async function register(req, res) {
 
 async function login(req, res) {
     try {
-        const { username, password } = req.body;
-        const user = await User.getUserByUsername(username);
+        const data = req.body;
+        const user = await User.getUserByUsername(data.username);
         if (user) {
-            const passwordMatch = await bcrpyt.compare(password, user.password);
+            console.log(user)
+            console.log(data)
+            const passwordMatch = await bcrypt.compare(data.password, user.password);
             if (passwordMatch) {
                 const token = uuidv4();
-                const updatedUser = await User.updateUser(user.id, { token: token });
-                if (updatedUser) {
-                    res.status(200).json({ user: updatedUser });
+                const tokenUpdate = await user.updateToken(user.id, { token: token });
+                if (tokenUpdate) {
+                    res.status(200).json({ user: tokenUpdate });
                 } else {
                     res.status(500).json({ error: "Failed to update user" });
                 }

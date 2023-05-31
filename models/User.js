@@ -51,8 +51,10 @@ class User {
 
     static async createUser({ name, username, password }) {
         try {
-            const response = await getUserCollection().insertOne({ name: name, username: username, password: password, token: "", tasks: [], pomodoroCount: 0 });
-            return new User(response.ops[0]);
+          const response = await getUserCollection().insertOne({ name: name, username: username, password: password, token: "", tasks: [], pomodoroCount: 0 });
+          console.log(response)
+            // return new User(response.ops[0]);
+          return response.acknowledged
         } catch (e) {
             console.error("Failed to create user:", e);
             return null;
@@ -131,7 +133,7 @@ class User {
 
     async updateToken(token) {
         try {
-            const response = await this.userCollection().updateOne(
+            const response = await getUserCollection().updateOne(
                 { _id: this.id },
                 { $set: { token: token } }
             );
