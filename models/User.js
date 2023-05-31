@@ -89,8 +89,9 @@ class User {
                 { username: this.username },
                 { $push: { tasks: { description, completed: false, pomodoroCount: 0 } } }
             );
-            return response.modifiedCount > 0;
             console.log(response);
+            return response.modifiedCount > 0;
+            
         } catch (e) {
             console.error(`Failed to add task for user ${this.username}:`, e);
             return false;
@@ -125,16 +126,33 @@ class User {
 
     async deleteTaskByIndex(index) {
         try {
-            const response = await this.userCollection().updateOne(
+            const user = await getUserCollection().findOne({ _id: this.id });
+    
+            if (!user || !user.tasks) {
+                console.error(`User ${this.username} not found or has no tasks.`);
+                return false;
+            }
+    
+            if (index < 0 || index >= user.tasks.length) {
+                console.error(`Invalid index ${index} for user ${this.username}.`);
+                return false;
+            }
+    
+            // Remove the task at the specified index.
+            user.tasks.splice(index, 1);
+    
+            const response = await getUserCollection().updateOne(
                 { _id: this.id },
-                { $unset: { [`tasks.${index}`]: 1 }, $pull: { tasks: null } }
+                { $set: { tasks: user.tasks } }
             );
+    
             return response.modifiedCount > 0;
         } catch (e) {
             console.error(`Failed to delete task by index for user ${this.username}:`, e);
             return false;
         }
     }
+    
 
     async updatePomodoroCount() {
         try {

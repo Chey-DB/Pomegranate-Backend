@@ -97,7 +97,7 @@ async function updatePomodoroCount(req, res) {
         if (user) {
             const updatedUser = await user.updatePomodoroCount();
             if (updatedUser) {
-                res.status(200).json({ user: user });
+                res.status(200).json({ user: updatedUser });
             } else {
                 res.status(500).json({ error: "Failed to update user" });
             }
@@ -111,13 +111,11 @@ async function updatePomodoroCount(req, res) {
 
 async function addTask(req, res) {
     try {
-        console.log(req.params.username);
         const user = await User.getUserByUsername(req.params.username);       
-        console.log(user);
         if (user) {
             const updatedUser = await user.addTask(req.body.description);
             if (updatedUser) {
-                res.status(200).json({ user: user });
+                res.status(200).json({ user: updatedUser});
             } else {
                 res.status(500).json({ error: "Failed to update user" });
             }
@@ -133,10 +131,10 @@ async function updateTask(req, res) {
     try {
         const user = await User.getUserByUsername(req.params.username);
         if (user) {
-            { description, completed, pomodoroCount } = (req.body);
-            const updatedUser = await user.updateTaskByIndex(req.params.index, req.body);
+            const { description, completed, pomodoroCount } = req.body;
+            const updatedUser = await user.updateTaskByIndex(req.params.index, description, completed, pomodoroCount);
             if (updatedUser) {
-                res.status(200).json({ user: user });
+                res.status(200).json({ user: updatedUser });
             } else {
                 res.status(500).json({ error: "Failed to update user" });
             }
@@ -152,9 +150,9 @@ async function deleteTask(req, res) {
     try {
         const user = await User.getUserByUsername(req.params.username);
         if (user) {
-            const updatedUser = await user.deleteTask(req.params.index);
+            const updatedUser = await user.deleteTaskByIndex(req.params.index);
             if (updatedUser) {
-                res.status(200).json({ user: user });
+                res.status(200).json({ user: updatedUser });
             } else {
                 res.status(500).json({ error: "Failed to update user" });
             }
