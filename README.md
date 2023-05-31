@@ -1,15 +1,17 @@
 # sinister-6-backend
 The backend of our revision App
 
+## Installation and Usage
+- add an .env file with DB_CONNECTION= and PORT= to add your own database URL and port
+- `npm install`
+- `npm run setup-db`
+- `npm run dev` app will run on port in .env file (http://localhost:3000)
 
-
-localhost:3000/
-
+## Endpoints
 [x]1.A user should be able to view all their tasks and pomodoroCount
 GET - :username
----> Return user document to be manipulated in view
 
-2. A user should be able to view the leaderboard
+[x]2. A user should be able to view the leaderboard
 GET - users
 
 [x]3.A user should be able to register
@@ -35,3 +37,7 @@ POST - :username/tasks/:index
 
 [x]9. A user should be able to have their pomodoroCount updated
 PATCH - :username/pomodoroCount
+
+
+
+
