@@ -49,11 +49,11 @@ async function login(req, res) {
 
 async function logout(req, res) {
     try {
-        const user = await User.getUserById(req.user.id);
+        const user = await User.getUserById(req.params.username);
         if (user) {
-            const updatedUser = await User.updateUser(user.id, { token: "" });
+            const updatedUser = await user.deleteToken(user.id, { token: "" });
             if (updatedUser) {
-                res.status(200).json({ user: updatedUser });
+                res.status(200).json({ user: user });
             } else {
                 res.status(500).json({ error: "Failed to update user" });
             }
@@ -65,7 +65,7 @@ async function logout(req, res) {
     }
 }
 
-async function profile(req, res) {
+async function showUser(req, res) {
     try {
         const user = await User.getUserByUsername(req.params.username);
         if (user) {
@@ -78,4 +78,100 @@ async function profile(req, res) {
     }
 }
 
-module.exports = { register, login, logout, profile }
+async function getAllUsers(req, res) {
+    try {
+        const users = await User.getAllUsers();
+        if (users) {
+            res.status(200).json({ users: users });
+        } else {
+            res.status(404).json({ error: "Users not found" });
+        }
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}
+
+async function updatePomodoroCount(req, res) {
+    try {
+        const user = await User.getUserByUsername(req.params.username);
+        if (user) {
+            const updatedUser = await user.updatePomodoroCount();
+            if (updatedUser) {
+                res.status(200).json({ user: user });
+            } else {
+                res.status(500).json({ error: "Failed to update user" });
+            }
+        } else {
+            res.status(404).json({ error: "User not found" });
+        }
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}
+
+async function addTask(req, res) {
+    try {
+        const user = await User.getUserByUsername(req.params.username);
+        if (user) {
+            const updatedUser = await user.addTask(req.body);
+            if (updatedUser) {
+                res.status(200).json({ user: user });
+            } else {
+                res.status(500).json({ error: "Failed to update user" });
+            }
+        } else {
+            res.status(404).json({ error: "User not found" });
+        }
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}
+
+async function updateTask(req, res) {
+    try {
+        const user = await User.getUserByUsername(req.params.username);
+        if (user) {
+            const updatedUser = await user.updateTask(req.params.index, req.body);
+            if (updatedUser) {
+                res.status(200).json({ user: user });
+            } else {
+                res.status(500).json({ error: "Failed to update user" });
+            }
+        } else {
+            res.status(404).json({ error: "User not found" });
+        }
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}
+
+async function deleteTask(req, res) {
+    try {
+        const user = await User.getUserByUsername(req.params.username);
+        if (user) {
+            const updatedUser = await user.deleteTask(req.params.index);
+            if (updatedUser) {
+                res.status(200).json({ user: user });
+            } else {
+                res.status(500).json({ error: "Failed to update user" });
+            }
+        } else {
+            res.status(404).json({ error: "User not found" });
+        }
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+}
+
+
+module.exports = { 
+    register, 
+    login, 
+    logout, 
+    showUser, 
+    getAllUsers, 
+    updatePomodoroCount, 
+    addTask, 
+    updateTask, 
+    deleteTask 
+}
