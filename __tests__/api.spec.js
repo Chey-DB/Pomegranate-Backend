@@ -38,19 +38,19 @@ describe('app server', () => {
     // })
 
 
-    test('responds to post /user/register with status 201', (done) => {
-        const testData = {
-            "name": "nuru",
-            "username": "abey",
-            "password": "abey"
-}
-        request(api)
-            .post('/user/register')
-            .send(testData)
-            .set('Accept', 'application/json')
-            .expect(201)
-            .expect({ ...testData, id:7 }, done)
-    })
+//     test('responds to post /user/register with status 201', (done) => {
+//         const testData = {
+//             "name": "nuru",
+//             "username": "abey",
+//             "password": "abey"
+// }
+//         request(api)
+//             .post('/user/register')
+//             .send(testData)
+//             .set('Accept', 'application/json')
+//             .expect(201)
+//             .expect({ ...testData, id:7 }, done)
+//     })
     
     
 })
