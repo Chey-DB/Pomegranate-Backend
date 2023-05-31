@@ -22,17 +22,21 @@ class User {
     static async getAllUsers() {
         try {
             const usersCursor = await getUserCollection().find();
-            return await usersCursor.toArray();
+            const allUsers = await usersCursor.toArray();
+            return allUsers.map((user) => new User(user));
         } catch (e) {
             console.error("Failed to get all users:", e);
             return [];
         }
     }
 
-    static async getUserById(id) {
+    static async getUserById(idx) {
         try {
-            const user = await getUserCollection().findOne({ _id: ObjectId(id) });
-            return new User(user);
+            const id = new ObjectId(idx);
+            const response = await getUserCollection().findOne({ _id: id });
+            const user = new User(response);
+            user["id"] = id
+            return user;
         } catch (e) {
             console.error(`Failed to get user by id ${id}:`, e);
             return null;
@@ -41,8 +45,9 @@ class User {
 
     static async getUserByUsername(username) {
         try {
-            const user = await getUserCollection().findOne({ username: username });
-            return new User(user);
+            const response = await getUserCollection().findOne({ username: username });
+            const user = new User(response);
+            return user;
         } catch (e) {
             console.error(`Failed to get user by username ${username}:`, e);
             return null;
@@ -51,10 +56,16 @@ class User {
 
     static async createUser({ name, username, password }) {
         try {
-          const response = await getUserCollection().insertOne({ name: name, username: username, password: password, token: "", tasks: [], pomodoroCount: 0 });
+          const response = await getUserCollection().insertOne({ 
+            name: name,
+            username: username, 
+            password: password, 
+            token: "", 
+            tasks: [], 
+            pomodoroCount: 0 
+        });
           console.log(response)
-            // return new User(response.ops[0]);
-          return response.acknowledged
+          return "Account created successfully!"
         } catch (e) {
             console.error("Failed to create user:", e);
             return null;
@@ -62,10 +73,35 @@ class User {
     }
 
     // Instance methods
+    async getAllTasks() {
+        try {
+            const user = await getUserCollection().findOne({ _id: this.id });
+            return user.tasks;
+        } catch (e) {
+            console.error(`Failed to get all tasks for user ${this.username}:`, e);
+            return [];
+        }
+    }
+
+    async addTask(description) {
+        try {
+            const response = await getUserCollection().updateOne(
+                { username: this.username },
+                { $push: { tasks: { description, completed: false, pomodoroCount: 0 } } }
+            );
+            console.log(response);
+            return response.modifiedCount > 0;
+            
+        } catch (e) {
+            console.error(`Failed to add task for user ${this.username}:`, e);
+            return false;
+        }
+    }
+
     async getTaskByIndex(index) {
         try {
             const user = await getUserCollection.findOne(
-                { _id: this.id }, 
+                { username: this.username }, 
                 { projection: { tasks: { $slice: [index, 1] } } }
             );
             return user.tasks[0];
@@ -75,10 +111,10 @@ class User {
         }
     }
     
-    async updateTaskByIndex(index, description, completed, pomodoroCount) {
+    async updateTaskByIndex( index, description, completed, pomodoroCount ) {
         try {
-            const response = await this.userCollection().updateOne(
-                { _id: this.id },
+            const response = await getUserCollection().updateOne(
+                { username: this.username },
                 { $set: { [`tasks.${index}`]: {description, completed, pomodoroCount} } }
             );
             return response.modifiedCount > 0;
@@ -90,16 +126,33 @@ class User {
 
     async deleteTaskByIndex(index) {
         try {
-            const response = await this.userCollection().updateOne(
+            const user = await getUserCollection().findOne({ _id: this.id });
+    
+            if (!user || !user.tasks) {
+                console.error(`User ${this.username} not found or has no tasks.`);
+                return false;
+            }
+    
+            if (index < 0 || index >= user.tasks.length) {
+                console.error(`Invalid index ${index} for user ${this.username}.`);
+                return false;
+            }
+    
+            // Remove the task at the specified index.
+            user.tasks.splice(index, 1);
+    
+            const response = await getUserCollection().updateOne(
                 { _id: this.id },
-                { $unset: { [`tasks.${index}`]: 1 }, $pull: { tasks: null } }
+                { $set: { tasks: user.tasks } }
             );
+    
             return response.modifiedCount > 0;
         } catch (e) {
             console.error(`Failed to delete task by index for user ${this.username}:`, e);
             return false;
         }
     }
+    
 
     async updatePomodoroCount() {
         try {
@@ -122,9 +175,12 @@ class User {
         return this.token;
     }
 
-    async createToken() {
+    async createToken(username) {
         const token = uuidv4();
-        const success = await User.updateToken(this.username, token);
+        const response = await getUserCollection().updateOne(
+            { username: username });
+        success = response.updateToken(token);
+        console.log(success);
         if (success) {
           this.token = token;
         }
@@ -145,7 +201,7 @@ class User {
     }
 
     async deleteToken() {
-        const success = await User.deleteToken(this.username);
+        const success = await User.getUserByUsername(this.username);
         if (success) {
             this.token = null;
         }

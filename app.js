@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
     res.json(" Hello World ")
 })
 
-app.use("/user", userRouter)
+app.use("/users", userRouter)
 
 
 module.exports = app
