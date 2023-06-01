@@ -14,7 +14,7 @@ class User {
         this.password = data.password;
         this.token = data.token;
         this.tasks = data.tasks;
-        this.pomodoroCount = data.pomodoroCount;
+        this.pomodoroCountTotal = data.pomodoroCountTotal;
     }
 
 
@@ -62,7 +62,7 @@ class User {
             password: password, 
             token: "", 
             tasks: [], 
-            pomodoroCount: 0 
+            pomodoroCountTotal: 0 
         });
           console.log(response)
           return "Account created successfully!"
@@ -156,9 +156,9 @@ class User {
 
     async updatePomodoroCount() {
         try {
-            const response = await this.userCollection().updateOne(
+            const response = await getUserCollection().updateOne(
                 { _id: this.id },
-                { $inc: { pomodoroCount: 1 } }
+                { $inc: { pomodoroCountTotal: 1 } }
             );
             return response.modifiedCount > 0;
         } catch (e) {

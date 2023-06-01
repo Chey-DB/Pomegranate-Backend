@@ -48,6 +48,13 @@ async function login(req, res) {
             })
         }
     }   
+    } catch (err) {
+            res.status(403).json({
+                success: false,
+                error: err
+            })
+        }
+    }
 
 
 async function logout(req, res) {

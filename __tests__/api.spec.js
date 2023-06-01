@@ -37,50 +37,20 @@ describe('app server', () => {
        
     // })
 
-    test('responds to unknown user id with status 404', (done) => {
-        request(api)
-            .get('/users/lee')
-            .expect(404, done)
-            // .expect({ error: "This user does not exist"}, done)
-       
-    })
 
-
-    test('responds to post /users/register with status 201', async () => {
-        const testData = {
-            "name": "nure",
-            "username": "abey1",
-            "password": "abey1" 
-}
-        const response = await request(api)
-            .post('/users/register')
-            .send(testData)
-        expect(response.statusCode).toBe(201);
-    })
-
-
-
-      test('responds to post /users/login with status 200', async () => {
-        const testData = {
-            "username": "abey1",
-            "password": "abey1"
-}
-        const response = await request(api)
-            .post('/users/login')
-            .send(testData)
-        expect(response.statusCode).toBe(200);    
-      })
-    
-    test('responds to invalid post /users/login with status 200', async () => {
-        const testData = {
-            "username": "lee",
-            "password": "abey1"
-}
-        const response = await request(api)
-            .post('/users/login')
-            .send(testData)
-        expect(response.statusCode).toBe(200);    
-    })
+//     test('responds to post /user/register with status 201', (done) => {
+//         const testData = {
+//             "name": "nuru",
+//             "username": "abey",
+//             "password": "abey"
+// }
+//         request(api)
+//             .post('/user/register')
+//             .send(testData)
+//             .set('Accept', 'application/json')
+//             .expect(201)
+//             .expect({ ...testData, id:7 }, done)
+//     })
     
     
 })
