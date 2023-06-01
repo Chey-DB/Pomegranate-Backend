@@ -14,7 +14,7 @@ class User {
         this.password = data.password;
         this.token = data.token;
         this.tasks = data.tasks;
-        this.pomodoroCount = data.pomodoroCount;
+        this.pomodoroCountTotal = data.pomodoroCountTotal;
     }
 
 
