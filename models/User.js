@@ -156,7 +156,7 @@ class User {
 
     async updatePomodoroCount() {
         try {
-            const response = await this.userCollection().updateOne(
+            const response = await getUserCollection().updateOne(
                 { _id: this.id },
                 { $inc: { pomodoroCount: 1 } }
             );
