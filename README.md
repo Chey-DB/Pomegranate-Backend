@@ -1,6 +1,6 @@
 # sinister-6-backend
 The backend of our revision App
-Deployed on https://pomegranate-backend.onrender.com/
+- Deployed on https://pomegranate-backend.onrender.com/
 
 ## Installation and Usage
 - add an .env file with DB_CONNECTION= and PORT= to add your own database URL and port
