@@ -27,25 +27,28 @@ async function login(req, res) {
         if (user) {
             console.log(user)
             console.log(data)
-            const passwordMatch = await bcrypt.compare(data.password, user.password);
-            if (passwordMatch) {
-                const token = uuidv4();
-                const tokenUpdate = await user.updateToken(user.id, { token: token });
-                if (tokenUpdate) {
-                    res.status(200).json({ user: tokenUpdate });
-                } else {
-                    res.status(500).json({ error: "Failed to update user" });
-                }
+            const authenticated = await bcrypt.compare(data.password, user.password);
+            if (!authenticated) {
+                throw new Error("Incorrect credentials")
             } else {
-                res.status(401).json({ error: "Incorrect password" });
+                const token = uuidv4();
+                const tokenUpdate = await user.updateToken(token);
+                res.status(200).json({
+                    success: true,
+                    authenticated: true,
+                    token: token
+                });
             }
-        } else {
-            res.status(404).json({ error: "User not found" });
+                
         }
-    } catch (e) {
-        res.status(500).json({ error: e.message });
-    }
-}
+    } catch (err) {
+            res.status(403).json({
+                success: false,
+                error: err
+            })
+        }
+    }   
+
 
 async function logout(req, res) {
     try {
