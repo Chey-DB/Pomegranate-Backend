@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const authenticator = require("../middleware/authenticator")
 
 const userController = require("../controllers/user")
 
@@ -12,11 +13,11 @@ userRouter.post("/register", userController.register);
 userRouter.post("/login", userController.login);
 
 // task routes
-userRouter.post("/:username/tasks", userController.addTask)
-userRouter.patch("/:username/tasks/:index", userController.updateTask)
-userRouter.delete("/:username/tasks/:index", userController.deleteTask)
+userRouter.post("/:username/tasks", authenticator, userController.addTask)
+userRouter.patch("/:username/tasks/:index", authenticator, userController.updateTask)
+userRouter.delete("/:username/tasks/:index", authenticator, userController.deleteTask)
 
 // pomodoro routes
-userRouter.patch("/:username/pomodoro", userController.updatePomodoroCount)
+userRouter.patch("/:username/pomodoro", authenticator, userController.updatePomodoroCount)
 
 module.exports = userRouter
