@@ -6,11 +6,12 @@ const seedDB = async () => {
         console.log("Awaiting Seed 🌱")
         await client.db('pomegranate').collection('user').drop()
         await client.db('pomegranate').collection('user').insertMany([
-            { name: "Chey", username: "Chey", password: "Chey", token: "", tasks: [{description: "MongoDB Data Modelling", completed: false, pomodoroCount: 1}], pomodoroCountTotal: 0},
-            { name: "a", username: "a", password: "a", token: "", tasks: [], pomodoroCount: 0},
-            { name: "b", usernbme: "b", pbssword: "b", token: "", tasks: [], pomodoroCount: 0},
-            { name: "c", username: "c", password: "c", token: "", tasks: [], pomodoroCount: 0},
-            { name: "d", username: "d", password: "d", token: "", tasks: [], pomodoroCount: 0}
+            { name: "Chey", username: "Chey", password: "Chey", token: "", tasks: [], pomodoroCountTotal: 0},
+            { name: "Valdir", username: "Valdir", password: "Valdir", token: "", tasks: [], pomodoroCountTotal: 0},
+            { name: "Azeem", usernbme: "Azeem", pbssword: "Azeem", token: "", tasks: [], pomodoroCountTotal: 0},
+            { name: "Kenen", username: "Kenen", password: "Kenen", token: "", tasks: [], pomodoroCountTotal: 0},
+            { name: "Mith", username: "Mith", password: "Mith", token: "", tasks: [], pomodoroCountTotal: 0},
+            { name: "Nurudeen", username: "Nurudeen", password: "Nurudeen", token: "", tasks: [], pomodoroCountTotal: 0}
         ])
         console.log("DB Seeded 🌾")
         await client.close()
