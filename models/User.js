@@ -62,7 +62,7 @@ class User {
             password: password, 
             token: "", 
             tasks: [], 
-            pomodoroCount: 0 
+            pomodoroCountTotal: 0 
         });
           console.log(response)
           return "Account created successfully!"
