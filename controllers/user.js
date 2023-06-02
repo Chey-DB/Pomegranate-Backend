@@ -45,7 +45,8 @@ async function login(req, res) {
                 error: err
             })
         }
-    }
+    }   
+
 
 
 async function logout(req, res) {
